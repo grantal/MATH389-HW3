@@ -17,10 +17,9 @@ int main(){
 
     do{
         printf(">>>> ");
-        // this has some weird behavior if you don't input exactly 2 string,
+        // this has some weird behavior if you don't input exactly 2 strings,
         // but since this is just for my own testing, I'm okay with that
         scanf("%s %s", turtname, action);
-        //printf("name:%s, action:%s.\n", turtname,action);
         
         int i;
         for (i=0;i < MAX_TURTLES; i++){
@@ -29,14 +28,10 @@ int main(){
             if (turtles[i] == NULL) {
                 if (strcmp(action, "create") == 0){
                     turtles[i] = new_turtle(turtname); 
-                    printf("Done\n");
+                    printf("Done.\n");
                 } 
                 break;
             }
-            /*
-            else if(1) {
-                printf("%s\n", turtles[i]->name);
-            }*/
             else if (strcmp(turtles[i]->name, turtname) == 0){
                 turtle *t = turtles[i];
                 if(strcmp(action,"forward") == 0){
@@ -47,7 +42,7 @@ int main(){
                     printf("This turtle already exists!\n");
                 }
                 else if(strcmp(action,"report") == 0){
-                    printf("turtle '%s' at (%d,%d) with heading %c\n", t->name,t->x_pos,t->y_pos,t->direction);
+                    printf("%s", as_string(t));
                 }
                 else if(strcmp(action,"left") == 0){
                     turn_left(t);
@@ -55,6 +50,18 @@ int main(){
                 }
                 else if(strcmp(action,"right") == 0){
                     turn_right(t);
+                    printf("Done.\n");
+                }
+                else if(strcmp(action,"pendown") == 0){
+                    pen_down(t);
+                    printf("Done.\n");
+                }
+                else if(strcmp(action,"penup") == 0){
+                    pen_up(t);
+                    printf("Done.\n");
+                }
+                else if(strcmp(action,"replenish") == 0){
+                    replenish(t);
                     printf("Done.\n");
                 }
                 else{

@@ -33,6 +33,17 @@ void forward(turtle *t) {
         default:
             fprintf(stderr, "Error: Turtle %s has direction %c\nTurtle direction should be E, S, W, or N.\n",t->name, t->direction);
     }
+    if (!(t->pen_up)) {
+        if (t->ink <= 0) {
+            t->pen_up = 1;
+        }
+        else{
+            t->ink--;
+            if (t->ink <= 0) {
+                t->pen_up = 1;
+            }
+        }
+    }
 }
 
 void turn_left(turtle *t) {
@@ -72,10 +83,29 @@ void turn_right(turtle *t) {
             fprintf(stderr, "Error: Turtle %s has direction %c\nTurtle direction should be E, S, W, or N.\n",t->name, t->direction);
     }
 }
-/*
-void pen_down(turtle *t);
-void pen_up(turtle *t);
-char *as_string(turtle *t);
-void replenish(turtle *t);
-*/
+
+void pen_down(turtle *t){
+    t->pen_up = 0;
+}
+void pen_up(turtle *t){ 
+    t->pen_up = 1;
+}
+char *as_string(turtle *t){
+    char *retstring = (char *)malloc(strlen(t->name)+ 100);
+    sprintf(retstring, "turtle '%s' at (%d,%d) with heading %c\n", t->name,t->x_pos,t->y_pos,t->direction);
+    if (!(t->pen_up)) {
+        sprintf((char *)(retstring + strlen(retstring)), "drawing");
+        if (t->ink == 1){
+            sprintf((char *)(retstring + strlen(retstring)), " with low ink");
+        }
+        sprintf((char *)(retstring + strlen(retstring)), "\n");
+    }
+    if (t->ink <= 0) {
+        sprintf((char *)(retstring + strlen(retstring)), "empty\n");
+    }
+    return retstring;
+}
+void replenish(turtle *t){
+    t->ink += 10;
+}
 

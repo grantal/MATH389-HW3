@@ -3,11 +3,24 @@
 #include "llist.h"
 #include "boolean.h"
 
-lnode *new_lnode(int data) {
+lnode *new_lnode(char *k, int v) {
   lnode *n = (lnode *)malloc(sizeof(lnode));
-  n->data = data;
+  n->k = k;
+  n->v = v;
   n->next = NULL;
   return n;
+}
+
+// helper function that gets lnode with key k
+lnode *get_lnode(llist *self, char *k) {
+  lnode *n = self->first; 
+  while (n != NULL) {
+	if (strcmp(n->k, k) == 0) {
+	  return n;
+	}
+	n = n->next;
+  }
+  return NULL;
 }
 
 llist *new_llist() {
@@ -30,30 +43,24 @@ int llist_length(llist *self) {
   return l;
 }
 
-boolean llist_contains(llist *self, int value) {
-  lnode *n = self->first; 
-  while (n != NULL) {
-	if (n->data == value) {
-	  return TRUE;
-	}
-	n = n->next;
-  }
-  return FALSE;
+boolean llist_contains(llist *self, char *k) {
+  lnode *n = get_lnode(self, k); 
+  return n != NULL;
 }
 
-void llist_insert(llist *self, int value) {
-  if (!llist_contains(self,value)) {
-	lnode *n = new_lnode(value);
+void llist_insert(llist *self, char *k, int v) {
+  if (!llist_contains(self,k)) {
+	lnode *n = new_lnode(k,v);
 	n->next = self->first; 
 	self->first = n;
   }
 }
 
-void llist_remove(llist *self, int value) {
+void llist_remove(llist *self, char* k) {
   lnode *n = self->first; 
   lnode *p = NULL;
   while (n != NULL) {
-	if (n->data == value) {
+	if (strcmp(n->k, k) == 0) {
 	  if (p == NULL) {
 		// Remove from the front.
 		self->first = self->first->next;
@@ -81,41 +88,22 @@ int num_chars(int d) {
   return l;
 }
 
-char *llist_as_string(llist *self) {
-  char *s;
-  if (llist_is_empty(self)) {
-	s = malloc(3);
-	sprintf(s, "{}");
-	return s;
-  } else {
-	int commas = llist_length(self)-1;
-	int chars = 0;
-	
-	// Compute the total length of the data items' characters.
-	lnode *n = self->first;
-	while (n != NULL) {
-	  chars += num_chars(n->data);
-	  n = n->next;
-	}
-	int l = 2 + (2*commas) + chars;
-	s = malloc(l+1);
-  
-	// Fill the string.
-	sprintf(s, "{");
-	chars = 1;
 
-	n = self->first;
-	sprintf(s+chars, "%d", n->data);
-	chars += num_chars(n->data);
-	n = n->next;
-	while (n != NULL) {
-	  sprintf(s+chars, ", %d", n->data);
-	  chars += 2 + num_chars(n->data);
-	  n = n->next;
-	}
-	sprintf(s+chars, "}");
 
-	// Done. Return it.
-	return s;
-  }
+int llist_get(llist *self, char *k){
+    lnode *n = get_lnode(self, k);
+    if (n != NULL) {
+        return n->v;
+    }
+    else {
+        return -1;
+    }
 }
+
+void llist_update(llist *self, char *k, int v) {
+    lnode *n = get_lnode(self, k);
+    if (n != NULL) {
+        n->v = v;
+    }
+}
+

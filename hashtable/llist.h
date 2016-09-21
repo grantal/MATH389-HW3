@@ -4,7 +4,8 @@
 #include "boolean.h"
 
 typedef struct _lnode {
-  int data;
+  char *k;
+  int v;
   struct _lnode *next;
 } lnode;
 
@@ -15,9 +16,10 @@ typedef struct _llist {
 llist *new_llist();
 boolean llist_is_empty(llist *self);
 int llist_length(llist *self);
-boolean llist_contains(llist *self, int value);
-void llist_insert(llist *self, int value);
-void llist_remove(llist *self, int value);
-char *llist_as_string(llist *self);
+boolean llist_contains(llist *self, char *k);
+void llist_insert(llist *self, char *k, int v);
+void llist_remove(llist *self, char *k);
+int llist_get(llist *self, char *k);
+void llist_update(llist *self, char *k, int v);
 
 #endif

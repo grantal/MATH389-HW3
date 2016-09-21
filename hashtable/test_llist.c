@@ -4,7 +4,7 @@
 #include "llist.h"
 
 // compile with:
-// gcc -o dict test_dict.c dict.c llist.c hash.c -lm
+// gcc -o llist test_llist.c llist.c -lm
 
 int main(){
     llist *l = new_llist();
@@ -31,6 +31,11 @@ int main(){
     
     printf("Is empty? %d\n", llist_is_empty(l));  
     printf("Length: %d\n", llist_length(l));  
+
+    llist_remove(l, "hello");
+    printf("Length: %d\n", llist_length(l));  
+    printf("Is there a value at '%s'? %d\n", "hello", llist_contains(l,"hello"));
+    printf("Value at '%s': %d\n", "hello", llist_get(l,"hello")); 
 
 
 }

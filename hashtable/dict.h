@@ -11,6 +11,11 @@ typedef struct _dict {
 } dict;
 
 dict *new_dict(int size);
+void insert(dict *d, char *k, int v);
+int look_up(dict *d, char *k);
+void update(dict *d, char *k, int v);
+// remove d, like remove dictionary
+void removed(dict *d, char *k);
 
 
 #endif

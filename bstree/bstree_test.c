@@ -3,6 +3,9 @@
 #include <string.h>
 #include "bstree.h"
 
+// compile with:
+// gcc -o bstree bstree.c bstree_test.c
+
 int main() {
   char command[100];
   bstree *t = new_bstree();
@@ -38,6 +41,10 @@ int main() {
 		} else {
 		  printf("Not found.\n");
 		}
+	  } else if (strcmp(command, "forwardout") == 0) {
+                forward_output(t); 
+	  } else if (strcmp(command, "reverseout") == 0) {
+                reverse_output(t); 
 	  } else {
 		printf("Come again????\n");
 	  }

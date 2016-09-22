@@ -7,6 +7,8 @@ typedef struct _bstnode {
   int key;
   struct _bstnode *left;
   struct _bstnode *right;
+  struct _bstnode *next;
+  struct _bstnode *prev;
 } bstnode;
 
 typedef struct _bstree {
@@ -21,5 +23,7 @@ void bstree_insert(bstree *self, int value);
 void bstree_remove(bstree *self, int value);
 // char *bstree_as_string(bstree *self);
 void bstree_output(bstree *self);
+void forward_output(bstree *self);
+void reverse_output(bstree *self);
 
 #endif

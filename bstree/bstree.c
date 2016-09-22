@@ -9,6 +9,8 @@ bstnode *new_bstnode(int data) {
   n->key = data;
   n->left = NULL;
   n->right = NULL;
+  n->next = NULL;
+  n->prev = NULL;
   return n;
 }
 
@@ -48,9 +50,31 @@ boolean bstree_contains(bstree *self, int value) {
   return FALSE;
 }
 
+// Where could prev be?
+//     ( n is the new node)
+//   * Left Child of n
+//   * Some Right grandchild of the left Node
+//     (Meaning you can take one left and then all rights)
+//   If no left child:
+//   * n's parent
+//   * first grandparent that goes right
+//     (meaning all of n's other grandparents are right children,
+//      but prev's child that connects to n is on the right
+// Whatever prev's next was will become n's next and prev's next will become n
+// Then next's prev will be set to n
+// Doesn't matter if prev's next is NULL
+
+// n is always a leaf so the first case doesn't matter
+// 
+
+
+
 void bstree_insert(bstree *self, int value) {
   bstnode *n = self->root; 
   bstnode *p = NULL;
+  bstnode *prev = NULL;
+  int leftcount = 0;
+  int rightcount = 0;
 
   // Find the parent node of the value.
   while (n != NULL) {
@@ -60,6 +84,7 @@ void bstree_insert(bstree *self, int value) {
 	} else if (value < n->key) {
 	  n = n->left;
 	} else {
+          prev = p;
 	  n = n->right;
 	}
   }
@@ -74,14 +99,46 @@ void bstree_insert(bstree *self, int value) {
 	p->right = x;
   }
 
+  x->prev = prev;
+  //setting next
+  if (prev != NULL){
+    x->next = prev->next;
+    if (x->next != NULL){
+      x->next->prev = x;
+    }
+    prev->next = x;
+  }
+  // if x has no prev then either it is the root or its parent is its next
+  else if( x != self->root) {
+    x->next = p;
+    // since prev is NULL, that means it never went right while going down 
+    // the tree, so p was the preivous smallest node
+    // so I can toss the current value of p->prev
+    p->prev = x;
+  } 
+
+
 }
 
-int min_helper(bstnode *n) {
+
+bstnode *bstnode_min_helper(bstnode *n){
   assert(n != NULL);
   while (n->left != NULL) {
 	n = n->left;
   }
-  return n->key;
+  return n;
+}
+
+bstnode *bstnode_max_helper(bstnode *n){
+  assert(n != NULL);
+  while (n->right != NULL) {
+	n = n->right;
+  }
+  return n;
+}
+
+int min_helper(bstnode *n) {
+  return bstnode_min_helper(n)->key;
 }
 
 void bstree_remove_helper(bstnode **px, int value) {
@@ -134,6 +191,38 @@ void bstree_output_helper(bstnode *x) {
 void bstree_output(bstree *self) {
   bstree_output_helper(self->root);
   printf("\n");
+}
+
+void forward_output(bstree *self){
+    bstnode *n = bstnode_min_helper(self->root);
+    printf("[");
+    while(n != NULL) {
+        if(n->next == NULL){
+            //leave off comma for last element
+            printf("%d",n->key);
+        }
+        else {
+            printf("%d, ",n->key);
+        }       
+        n = n->next;
+    }
+    printf("]\n");
+}
+
+void reverse_output(bstree *self){
+    bstnode *n = bstnode_max_helper(self->root);
+    printf("[");
+    while(n != NULL) {
+        if(n->prev == NULL){
+            //leave off comma for last element
+            printf("%d",n->key);
+        }
+        else {
+            printf("%d, ",n->key);
+        }       
+        n = n->prev;
+    }
+    printf("]\n");
 }
 
 /*
